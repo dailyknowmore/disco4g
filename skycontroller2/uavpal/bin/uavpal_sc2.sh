@@ -127,6 +127,10 @@ main()
 	else
 		input_dev_settings="/dev/input/event1"
 	fi
+
+	killall servo1.sh
+	/data/lib/ftp/uavpal/bin/servo1.sh 0 wifi &
+
 	while true; do
 		# wait for Settings button event
 		while true; do
@@ -317,9 +321,12 @@ switch_to_lte()
 
 	kill9_pid_tree $pow_pid
 	pow_pid=0
-
+	
 	ulogger -s -t uavpal_sc2 "... resuming process mppd"
 	killall -SIGCONT mppd
+
+	killall servo1.sh
+	/data/lib/ftp/uavpal/bin/servo1.sh 0 lte &
 
 	ulogger -s -t uavpal_sc2 "*** idle on LTE ***"
 }
@@ -347,6 +354,10 @@ switch_to_wifi()
 	ulogger -s -t uavpal_sc2 "... terminating processes required for LTE"
 	killall zerotier-one
 	killall udhcpc
+
+	killall servo1.sh
+	/data/lib/ftp/uavpal/bin/servo1.sh 0 wifi &	
+
 	ulogger -s -t uavpal_sc2 "*** idle on Wi-Fi (or at least trying to connect) ***"
 }
 
